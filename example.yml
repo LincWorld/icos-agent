@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  icosagent:
+    image: linc1/icosagent
+    restart: unless-stopped
+    depends_on:
+      - mqtt
+    environment:
+      MQTT_PROTOCOL: mqtt
+      MQTT_BROKER: mqtt
+      MQTT_PORT: 1883
+      AGG_PERIOD: 60
+
+  mqtt:
+    image: efrecon/mosquitto
+    hostname: mqtt
+    ports:
+      -
+        target: 8883
+        published: 8883
+        protocol: tcp
+        mode: host
+    environment: 
+    - MOSQUITTO__PERSISTENCE__PERSISTENCE=true
+    restart: unless-stopped
+
+volumes:
+  mosquitto_data:
+  mosquitto_config:
+  mosquitto_log:
