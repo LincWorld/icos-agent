@@ -18,7 +18,7 @@ const cache = new TTLCache<string, { id: string, timestamp: number, data: { [key
 const publish = (obj) => {
 	axios.post(publish_url, obj)
 		.then(function (response) {
-			console.log(response);
+			console.log(response.status);
 		})
 		.catch(function (error) {
 			console.log(error);
