@@ -7,7 +7,7 @@ FROM base AS install
 RUN mkdir -p /temp/dev
 COPY . /temp/dev/
 RUN cd /temp/dev && bun install --frozen-lockfile
-RUN cd /temp/dev && bun build ./index.ts --compile --outfile icosagent
+RUN cd /temp/dev && bun run build
 
 # # [optional] tests & build
 # ENV NODE_ENV=production

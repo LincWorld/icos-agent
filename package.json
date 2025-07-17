@@ -1,19 +1,19 @@
 {
-  "name": "icosagent",
-  "version": "1.0.0",
-  "main": "index.js",
-  "private": true,
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
-  "license": "ISC",
-  "description": "",
-  "dependencies": {
-    "@isaacs/ttlcache": "^1.4.1",
-    "axios": "^1.7.7",
-    "mathjs": "^13.1.1",
-    "mqtt": "^5.10.1",
-    "mqtt-server": "^0.1.0"
-  }
+	"name": "icosagent",
+	"version": "2.0.0",
+	"main": "index.ts",
+	"private": true,
+	"scripts": {
+		"build": "bun build ./index.ts --compile --target bun --outfile icosagent",
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "",
+	"license": "Apache-2.0",
+	"description": "",
+	"dependencies": {
+		"mqtt": "5.13.2"
+	},
+	"devDependencies": {
+		"@types/bun": "^1.2.18"
+	}
 }
