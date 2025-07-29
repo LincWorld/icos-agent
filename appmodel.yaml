@@ -1,0 +1,94 @@
+name: gridsync01
+description: Linc / AIenergy
+components:
+    - name: component-1
+      type: kubernetes
+      manifests:
+          - name: comp-1-manifest
+          - name: comp-1-service
+      requirements:
+          nodelabel:
+              key: hostname
+              values:
+                  - lincr01
+    - name: component-2
+      type: kubernetes
+      manifests:
+          - name: comp-2-manifest
+      requirements:
+          nodelabel:
+              key: hostname
+              values:
+                  - lincr01
+manifests:
+- name: comp-1-manifest
+  manifest:
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+          labels:
+              io.kompose.service: mqtt-01
+          name: mqtt-01
+      spec:
+          replicas: 1
+          selector:
+              matchLabels:
+                  io.kompose.service: mqtt-01
+          template:
+              metadata:
+                  labels:
+                      io.kompose.service: mqtt-01
+              spec:
+                  containers:
+                      - image: emqx/nanomq:latest
+                        name: mqtt
+                        ports:
+                            - containerPort: 1883
+                              protocol: TCP
+                  hostname: mqtt
+                  restartPolicy: Always
+- name: comp-1-service
+  manifest:
+      apiVersion: v1
+      kind: Service
+      metadata:
+          name: mqtt-service-01
+      spec:
+          selector:
+              io.kompose.service: mqtt-01
+          ports:
+              - protocol: TCP
+                port: 31883
+                targetPort: 1883
+                nodePort: 31883
+          type: NodePort
+- name: comp-2-manifest
+  manifest:
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+          labels:
+              io.kompose.service: icosagent-01
+          name: icosagent-01
+      spec:
+          replicas: 1
+          selector:
+              matchLabels:
+                  io.kompose.service: icosagent-01
+          template:
+              metadata:
+                  labels:
+                      io.kompose.service: icosagent-01
+              spec:
+                  containers:
+                      - env:
+                            - name: MQTT_BROKER
+                              value: mqtt://mqtt-service-01:31883
+                            - name: ENDPOINT0_URL
+                              value: http://dso-microservices.linc.world/api/v1/data
+                            - name: ENDPOINT1_URL
+                              value: http://dso-microservices.ai-nergy.net/v0/forecast
+                        image: linc1/icosagent:v2
+                        imagePullPolicy: Always
+                        name: icosagent
+                  restartPolicy: Always
